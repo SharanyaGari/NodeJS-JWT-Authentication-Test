@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const jwt = require('jsonwebtoken');
 const {expressjwt:exjwt} = require('express-jwt');
+const jwtDecode = require('jwt-decode');
+
 
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -43,7 +45,7 @@ app.post('/api/login', (req, res) => {
     const {username, password} = req.body;
     for(let user of users){
         if(username == user.username && password == user.password){
-            let  token = jwt.sign({id: user.id, username: user.username}, secretKey, {expiresIn: '7d'});
+            let  token = jwt.sign({id: user.id, username: user.username}, secretKey, {expiresIn: '180s'});
             res.json({
                 success: true,
                 err: null,

@@ -53,39 +53,52 @@
                     }
                 });
 
+        }
 
+        function isTokenExpired(token) {
+            const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
+            return (Math.floor((new Date()).getTime() / 1000)) >= expiry;
+ 
         }
 
         function getDashboard(){
             const token = localStorage.getItem('jwt');
-            window.history.pushState(null, "dashboard", "/dashboard");
-            axios.get('/api/dashboard', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then(res => {
-                if (res && res.data && res.data.success) {
-                    document.querySelector('h1.row').innerHTML = 'Dashboard';
-                    document.querySelector('main').innerHTML = res.data.myContent
-                }
-                
-            });
+            if (isTokenExpired(token)) {
+                window.location.href = '/'
+            } else {
+                window.history.pushState(null, "dashboard", "/dashboard");
+                axios.get('/api/dashboard', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }).then(res => {
+                    if (res && res.data && res.data.success) {
+                        document.querySelector('h1.row').innerHTML = 'Dashboard';
+                        document.querySelector('main').innerHTML = res.data.myContent
+                    }
+                    
+                });
+            }
         }
 
         function getSetting(){
             const token = localStorage.getItem('jwt');
-            window.history.pushState(null, "setting", "/settings");
-            axios.get('/api/setting', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then(res => {
-                if (res && res.data && res.data.success) {
-                    document.querySelector('h1.row').innerHTML = 'Settings';
-                    document.querySelector('main').innerHTML = res.data.myContent
-                }
-                
-            });
+            if (isTokenExpired(token)) {
+                window.location.href = '/'
+            } else {
+                window.history.pushState(null, "setting", "/settings");
+                axios.get('/api/setting', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }).then(res => {
+                    if (res && res.data && res.data.success) {
+                        document.querySelector('h1.row').innerHTML = 'Settings';
+                        document.querySelector('main').innerHTML = res.data.myContent
+                    }
+                    
+                });
+            }
         }
     </script>
 </body>
